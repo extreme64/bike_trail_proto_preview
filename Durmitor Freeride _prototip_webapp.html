@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Durmitor Freeride _prototip</title>
+    
+      <style>
+      html, body, #map-canvas { height: 100%;  margin: 0px; padding: 0px }
+    </style>
+   <!-- <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>-->
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather"></script>
+    <!--<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather"></script>-->
+      
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    
+    <script>
+
+        //vars marks
+        {
+            //var mark_003 = new google.maps.LatLng(43.170926487,19.097079914);
+            //var mark_004 = new google.maps.LatLng(43.172623655,19.086440429);
+            //var mark_005 = new google.maps.LatLng(43.175577354,19.085101085);
+            var mark_006 = new google.maps.LatLng(43.174251672,19.080044199);
+            var mark_007 = new google.maps.LatLng(43.174369102,19.083708348);
+            var mark_008 = new google.maps.LatLng(43.174890876,19.084173292);
+            var mark_009 = new google.maps.LatLng(43.174414113,19.084914839);
+            var mark_010 = new google.maps.LatLng(43.173956457,19.085725581);
+            var mark_011 = new google.maps.LatLng(43.173492020,19.086744944);
+            var mark_012 = new google.maps.LatLng(43.174151592,19.088966399);
+            var mark_013 = new google.maps.LatLng(43.173774490,19.091266226);
+            var mark_014 = new google.maps.LatLng(43.173876917,19.092538347);
+            var mark_015 = new google.maps.LatLng(43.172953734,19.094952587);
+            var mark_016 = new google.maps.LatLng(43.171682283,19.098714804);
+            var mark_017 = new google.maps.LatLng(43.172161896,19.104539976);
+            var mark_018 = new google.maps.LatLng(43.167838845,19.091205206);
+            var mark_019 = new google.maps.LatLng(43.171431413,19.096261924);
+            var mark_020 = new google.maps.LatLng(43.168995464,19.096286399);
+            var mark_021 = new google.maps.LatLng(43.167983685,19.096867768);
+            var mark_022 = new google.maps.LatLng(43.166925050,19.098236952);
+            var mark_023 = new google.maps.LatLng(43.166196914,19.099146221);
+            var mark_024 = new google.maps.LatLng(43.165918635,19.101901604);
+            var mark_025 = new google.maps.LatLng(43.164408049,19.103642525);
+        }
+        
+        var trail1; var trail2; var trail3;
+       
+        var elevator;
+        var polyline;
+        var map;
+        var chart;
+        var num_samples = 50;
+        var full; //cela duzina staze
+        var trailProto1Array;
+        var sample_distanca;
+        var visinaElevprofila = '300px';
+        var elevationsGlob_Array;
+        var marker;
+        var marker_proto1;
+        var marker_proto2;
+        var samplesData;
+        var markerSample; //ogledalo uzorka na mapi
+        var infowindow = new google.maps.InfoWindow({
+                            content:"Info prozor!"
+                        });
+        var trasaEditStatus;
+        var trasaSelektovana = 1;
+        // Load the Visualization API and the columnchart package.
+        google.load('visualization', '1', {packages: ['columnchart']});
+        
+        var boje_trasa = [ '#FF9955' , '#5392c2' , '#9be066' ]
+        
+        
+        function initialize() {
+           
+            trasaSelektovana = 1;
+
+            var mapOptions = {
+                zoom: 16,
+                center: mark_020,
+                disableDefaultUI:true,   
+                mapTypeId: 'terrain'
+            }
+            var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        
+            /** duzine */
+            {
+                var opis_dist_1_2 = mark_006.distanceFrom(mark_007)*1000;
+                opis_dist_1_2 = opis_dist_1_2.toFixed(2);
+                
+                var opis_dist_2_3 = mark_007.distanceFrom(mark_008)*1000;
+                opis_dist_2_3 = opis_dist_2_3.toFixed(2);
+                
+                var opis_dist_3_4 = mark_008.distanceFrom(mark_009)*1000;
+                opis_dist_3_4 = opis_dist_3_4.toFixed(2);
+                
+                var opis_dist_4_5 = mark_009.distanceFrom(mark_010)*1000;
+                opis_dist_4_5 = opis_dist_4_5.toFixed(2);
+                
+                var opis_dist_5_6 = mark_010.distanceFrom(mark_011)*1000;
+                opis_dist_5_6 = opis_dist_5_6.toFixed(2);
+                
+                var opis_dist_6_7 = mark_011.distanceFrom(mark_012)*1000;
+                opis_dist_6_7 = opis_dist_6_7.toFixed(2);
+                
+                var opis_dist_7_8 = mark_012.distanceFrom(mark_013)*1000;
+                opis_dist_7_8 = opis_dist_7_8.toFixed(2);
+                
+                var opis_dist_8_9 = mark_013.distanceFrom(mark_014)*1000;
+                opis_dist_8_9 = opis_dist_8_9.toFixed(2);
+                
+                var opis_dist_9_10 = mark_014.distanceFrom(mark_015)*1000;
+                opis_dist_9_10 = opis_dist_9_10.toFixed(2);
+                
+                var opis_dist_10_11 = mark_015.distanceFrom(mark_019)*1000;
+                opis_dist_10_11 = opis_dist_10_11.toFixed(2);
+                
+                var opis_dist_11_12 = mark_019.distanceFrom(mark_020)*1000;
+                opis_dist_11_12 = opis_dist_11_12.toFixed(2);
+                
+                var opis_dist_12_13 = mark_020.distanceFrom(mark_021)*1000;
+                opis_dist_12_13 = opis_dist_12_13.toFixed(2);
+                
+                var opis_dist_13_14 = mark_021.distanceFrom(mark_022)*1000;
+                opis_dist_13_14 = opis_dist_13_14.toFixed(2);
+                
+                var opis_dist_14_15 = mark_022.distanceFrom(mark_023)*1000;
+                opis_dist_14_15 = opis_dist_14_15.toFixed(2);
+                
+                var opis_dist_15_16 = mark_023.distanceFrom(mark_024)*1000;
+                opis_dist_15_16 = opis_dist_15_16.toFixed(2);
+                
+                var opis_dist_16_17 = mark_024.distanceFrom(mark_025)*1000;
+                opis_dist_16_17 = opis_dist_16_17.toFixed(2);
+                
+                full = Number(opis_dist_1_2) + Number(opis_dist_2_3) +Number(opis_dist_3_4) + Number(opis_dist_4_5) +Number(opis_dist_5_6) +Number(opis_dist_6_7)
+                    + Number(opis_dist_7_8)+Number(opis_dist_8_9)+Number(opis_dist_9_10)+Number(opis_dist_10_11)+Number(opis_dist_11_12)
+                    + Number(opis_dist_11_12) + Number(opis_dist_12_13)+Number(opis_dist_13_14)+Number(opis_dist_14_15)+Number(opis_dist_15_16)+Number(opis_dist_16_17);
+                
+                
+              
+            }
+            
+            /** ikonice i marker niz */
+            {
+                var startIco = 'https://cdn3.iconfinder.com/data/icons/lightly-icons/30/652831-location-favorite-30.png'; // 'http://c.tadst.com/gfx/n/icon/icon-map-pin.png';
+                // igla
+                var mark =  'https://cdn2.iconfinder.com/data/icons/navigation-location-outline/512/pin_locate_location_map_marker_navigate_navigation_plan_road_route_-20.png';
+                // solica
+                var mark2 =  'https://cdn0.iconfinder.com/data/icons/navigation-4/100/16-20.png';
+                // omca
+                var mark3 =  'https://cdn1.iconfinder.com/data/icons/maps-locations/24/Geo-20.png';
+                // suza plus
+                var mark4 =  'https://cdn4.iconfinder.com/data/icons/outline-2/64/location-pin-add-20.png';
+                // 2 kruga
+                var mark5 =   'https://cdn3.iconfinder.com/data/icons/garis/512/location-20.png'
+                
+                var markFinsh =  'https://cdn1.iconfinder.com/data/icons/streamline-map-location-2/60/cell-8-4-30.png';
+                //var marker = new google.maps.Marker({ position: mark1, map: map, title: 'tacka 003' });
+                //var marker = new google.maps.Marker({ position: mark2, map: map, title: 'tacka 004' });
+                //var marker = new google.maps.Marker({ position: mark3, map: map, title: 'tacka 005' });
+                  markerSample = new google.maps.Marker({ 
+                    position: mark_006 , 
+                    map: map, 
+                    title: 'Selektovan uzorak', 
+                    draggable: false, icon: '/'
+                  });
+                
+                
+            marker = 
+                 [
+                    new google.maps.Marker({ position: mark_006, map: map, title: 'tacka 006 / Ispod Malog Štu.  ', draggable: true, icon: startIco }),
+                    new google.maps.Marker({ position: mark_007, map: map, title: 'tacka 007 / Ispod panj dropa  ' + opis_dist_1_2+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_008, map: map, title: 'tacka 008 / Strmi ROCK garden  ' + opis_dist_2_3+'m', draggable: true, icon: mark }) ,
+                    new google.maps.Marker({ position: mark_009, map: map, title: 'tacka 009 / Stena drop  ' + opis_dist_3_4+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_010, map: map, title: 'tacka 010 / Greben svašta  ' + opis_dist_4_5+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_011, map: map, title: 'tacka 011 / Veliki skok I  ' + opis_dist_5_6+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_012, map: map, title: 'tacka 012 / Veliki 3 panj  ' + opis_dist_6_7+'m', draggable: true, icon: mark}),
+                    new google.maps.Marker({ position: mark_013, map: map, title: 'tacka 013 / Uspon I !!!   ' + opis_dist_7_8+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_014, map: map, title: 'tacka 014 / S krivine  ' + opis_dist_8_9+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_015, map: map, title: 'tacka 015 / Uspon II ' + opis_dist_9_10+'m' , draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_016, map: map, title: 'tacka 016 / Prvi stari izlaz put  ' , draggable: true, icon: mark2}),
+                    new google.maps.Marker({ position: mark_017, map: map, title: 'tacka 017 /  ' , draggable: true, icon: mark2}),
+                    new google.maps.Marker({ position: mark_018, map: map, title: 'tacka 018 / Vrh kod lifta 1570 mnv. ' , draggable: true, icon: mark2 }),
+                    new google.maps.Marker({ position: mark_019, map: map, title: 'tacka 019 / Izlaz na put  ' + opis_dist_10_11+'m' , draggable: true, icon: mark2}),
+                    new google.maps.Marker({ position: mark_020, map: map, title: 'tacka 020 / Početak strmine  ' + opis_dist_11_12+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_021, map: map, title: 'tacka 021 / Slomljeni panjevi  ' + opis_dist_12_13+'m' , draggable: true, icon: mark}),
+                    new google.maps.Marker({ position: mark_022, map: map, title: 'tacka 022 / Set potencijalnih dropova  ' + opis_dist_13_14+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_023, map: map, title: 'tacka 023 / Čistina  ' + opis_dist_14_15+'m' , draggable: true, icon: mark2}),
+                    new google.maps.Marker({ position: mark_024, map: map, title: 'tacka 024 / Raskrsnica desno  ' + opis_dist_15_16+'m', draggable: true, icon: mark }),
+                    new google.maps.Marker({ position: mark_025, map: map, title: 'tacka 025 / Kraj, put  '+opis_dist_16_17+'m' ,draggable:true,icon: markFinsh })
+                ];
+            }
+            
+        
+            
+            
+            {
+            marker_proto1 = 
+            [
+                new google.maps.Marker({ position: new google.maps.LatLng(43.174251672,19.080044198999985), map: map, title:'', draggable: true, icon: startIco }),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.174369102,19.08370834799996), map: map, title: '', draggable: true, icon: mark }),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.175047359854084,19.084473699409727), map: map, title: '', draggable: true, icon: mark }) ,
+                new google.maps.Marker({ position: new google.maps.LatLng(43.174414113,19.08491483900002), map: map, title: '', draggable: true, icon: mark }),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17395645700002,19.085811411688496), map: map, title: '', draggable: true, icon: mark }),    
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17349202,19.086744943999975), map: map, title: '', draggable: true, icon: mark }), 
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17396380857255,19.088880568311538), map: map, title: '', draggable: true, icon: mark}),   
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17364930033946,19.090965818590348), map: map, title: '', draggable: true, icon: mark }),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17243722282442,19.09185170149226), map: map, title: '', draggable: true, icon: mark }),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17254686119686,19.092935565820767), map: map, title:'' , draggable: true, icon: mark }),
+                
+                
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17190088995291,19.0945453102305), map: map, title:'' , draggable: true, icon: mark}),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.17043523930827,19.09517060004987), map: map, title: '' , draggable: true, icon: mark}),
+                
+                new google.maps.Marker({ position: new google.maps.LatLng(43.168515788642495,19.09806939763871), map: map, title:'' , draggable: true, icon: mark }),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.168427474390136,19.09969607370408), map: map, title: '' , draggable: true, icon: mark}),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.167793257716106,19.100948665457963), map: map, title:'', draggable: true, icon: mark }),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.16666986419123,19.102759910884743), map: map, title: '' , draggable: true, icon: mark}),
+                new google.maps.Marker({ position: new google.maps.LatLng(43.16550361557406,19.104243339819277), map: map, title: '', draggable: true, icon: mark }) 
+            ];
+            
+            
+            }
+            /*  marker_proto1 =
+            
+                19.080044198999985, 43.174251672
+                19.08370834799996, 43.174369102
+                19.084473699409727, 43.175047359854084
+                19.08491483900002, 43.174414113
+                19.085811411688496, 43.17395645700002
+                19.086744943999975, 43.17349202
+                19.088880568311538, 43.17396380857255
+                19.090965818590348, 43.17364930033946
+                19.09185170149226, 43.17243722282442
+                19.092935565820767, 43.17254686119686
+                19.0945453102305, 43.17190088995291
+                19.09517060004987, 43.17043523930827
+                19.09806939763871, 43.168515788642495
+                19.09969607370408, 43.168427474390136
+                
+                19.100948665457963, 43.167793257716106
+                19.102759910884743, 43.16666986419123
+                19.104243339819277, 43.16550361557406
+            */
+            
+            {
+            marker_proto2 = [
+           
+              new google.maps.Marker({ position: new google.maps.LatLng(43.174251672, 19.080044198999985), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.174369102, 19.08370834799996), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.1750786565768, 19.084473699409727), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.174414113, 19.08491483900002), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.17439461748531, 19.08598307306545), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.17349202, 19.086744943999975), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.173118776003335, 19.087893515394057), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.172679071768954, 19.089850019640153), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.17174866143861, 19.091250886672924), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.17085674515324, 19.09237766634567), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.16952216954571, 19.09334368059183), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.16824426340966, 19.093754393690006), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.168359288052365, 19.0968248526558), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.16827097357373, 19.099824819736796), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.167605454738336, 19.101377818900346), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng(43.16673246620682, 19.102674080196266), map: map, title:'', draggable: true, icon: mark }),
+              new google.maps.Marker({ position: new google.maps.LatLng( 43.16553491718748, 19.104286255163515), map: map, title:'', draggable: true, icon: mark })
+            
+              ];
+            
+            }
+            
+            
+            /** iscrtavanje poliduzi */
+            trailProto1Array = [
+                mark_006, mark_007,  mark_008, mark_009,
+                mark_010, mark_011, mark_012, mark_013,
+                mark_014, mark_015, mark_019, mark_020, mark_021,
+                mark_022, mark_023, mark_024, mark_025
+            ];
+            
+            trail1 = new google.maps.Polyline({
+                path: trailProto1Array,
+                geodesic: true,
+                strokeColor: boje_trasa[0],
+                strokeOpacity: 0.8,
+                strokeWeight: 3,
+                clickable: true
+            });
+            trail1.setMap(map);
+            
+            var pro1_trasa = [];
+             marker_proto1.forEach(function(entry) {
+                pro1_trasa.push(entry.position);
+            });
+            trail2 = new google.maps.Polyline({
+                path: pro1_trasa,
+                geodesic: true,
+                strokeColor: boje_trasa[1],
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                clickable: true
+            });
+            trail2.setMap(map);
+        
+            var pro2_trasa = [];
+             marker_proto2.forEach(function(entry) {
+                pro2_trasa.push(entry.position);
+            });
+            trail3 = new google.maps.Polyline({
+                path: pro2_trasa,
+                geodesic: true,
+                strokeColor: boje_trasa[2],
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                clickable: true
+            });
+            trail3.setMap(map);
+        
+            
+            elevator = new google.maps.ElevationService();// Create an ElevationService.
+            
+            drawPath(trailProto1Array);// Draw the path, using the Visualization API and the Elevation service.
+
+         /** za vreme i klimu*/
+            /*var weatherLayer = new google.maps.weather.WeatherLayer({
+                temperatureUnits: google.maps.weather.TemperatureUnit.CELSIUS
+            });
+            weatherLayer.setMap(map);
+            var cloudLayer = new google.maps.weather.CloudLayer();
+            cloudLayer.setMap(map);*/
+
+            
+            $("#distancaPoUzorku").text(sample_distanca());
+            
+            
+            var path2;
+            for(var ii=0; ii < marker.length; ii++)
+            {
+                google.maps.event.addListener(marker[ii], 'click', function() {
+                     trasaSelektovana = 1;
+                    infowindow.close(map,this);
+                    map.panTo(this.position);
+                    var cont = '<div style="height: 100px"><p>Opis</p><p>'+this.title+'<p/></div>'
+                    infowindow.content = cont;
+                    infowindow.height = '300px';
+                    infowindow.open(map,this);
+     
+                    trail2.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    trail3.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    
+                    trail1.setMap(null);
+                     path2 = [
+                         marker[0].position, marker[1].position, marker[2].position, marker[3].position, marker[4].position, marker[5].position, 
+                         marker[6].position, marker[7].position, marker[8].position, marker[9].position, marker[13].position, marker[14].position, marker[15].position,                                                                         marker[16].position, marker[17].position, marker[18].position, marker[19].position 
+                    ];
+                    trail1 = new google.maps.Polyline({
+                        path: path2,
+                        geodesic: true,
+                        strokeColor: boje_trasa[0],
+                        strokeOpacity: 1,
+                        strokeWeight: 3
+                    });
+                    trail1.setMap(map);
+                    
+                     var pathRequest = {
+                      'path': path2,
+                      'samples': num_samples
+                    }
+                    trailProto1Array = path2;
+                    elevator.getElevationAlongPath(pathRequest, plotElevation);
+                    
+                    
+                });
+                google.maps.event.addListener(marker[ii], 'dragend', function() {
+                     trasaSelektovana = 1;
+                    //pozovi iscrtavanje linije staze
+                     
+                    trail2.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    trail3.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    
+                    trail1.setMap(null);
+                     path2 = [
+                         marker[0].position, marker[1].position, marker[2].position, marker[3].position, marker[4].position, marker[5].position, 
+                         marker[6].position, marker[7].position, marker[8].position, marker[9].position, marker[13].position, marker[14].position, marker[15].position,                                                                         marker[16].position, marker[17].position, marker[18].position, marker[19].position 
+                    ];
+                    trail1 = new google.maps.Polyline({
+                        path: path2,
+                        geodesic: true, 
+                        strokeColor: boje_trasa[0],
+                        strokeOpacity: 1,
+                        strokeWeight: 3
+                    });
+                    trail1.setMap(map);
+                    //var path = poly.getPath().getArray(); path.push(new google.maps.LatLng(position.coords.latitude, position.coords.longitude)); poly.setPath(path);
+                     var pathRequest = {
+                      'path': path2,
+                      'samples': num_samples
+                    }
+                    trailProto1Array = path2;
+                    elevator.getElevationAlongPath(pathRequest, plotElevation);
+                });
+                
+            }
+            
+            var pathPro1 = [];
+            for(var ii=0; ii < marker_proto1.length; ii++)
+            {
+                google.maps.event.addListener(marker_proto1[ii], 'click', function() {
+                     trasaSelektovana = 2;
+                    
+                    trail1.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    trail3.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    
+                    
+                    trail2.setMap(null);
+                    pathPro1 = [];
+                    marker_proto1.forEach(function(e){
+                        pathPro1.push(e.position);
+                    })
+                    trail2 = new google.maps.Polyline({
+                        path: pathPro1,
+                        geodesic: true,
+                        strokeColor: boje_trasa[1],
+                        strokeOpacity: 1,
+                        strokeWeight: 3
+                    });
+                    trail2.setMap(map);
+                    var pathRequest = {
+                      'path': pathPro1,
+                      'samples': num_samples
+                    }
+                    trailProto1Array = pathPro1;
+                    elevator.getElevationAlongPath(pathRequest, plotElevation);
+                });     
+                google.maps.event.addListener(marker_proto1[ii], 'dragend', function() {
+                     trasaSelektovana = 2;
+                    
+                    trail1.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    trail3.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    
+                    trail2.setMap(null);
+                    pathPro1 = [];
+                    marker_proto1.forEach(function(e){
+                        pathPro1.push(e.position);
+                    })
+                    trail2 = new google.maps.Polyline({
+                        path: pathPro1,
+                        geodesic: true,
+                        strokeColor: boje_trasa[1],
+                        strokeOpacity: 1,
+                        strokeWeight: 3
+                    });
+                    trail2.setMap(map);
+                     var pathRequest = {
+                      'path': pathPro1,
+                      'samples': num_samples
+                    }
+                    trailProto1Array = pathPro1;
+                    elevator.getElevationAlongPath(pathRequest, plotElevation);
+                });
+                
+            }
+            
+            var pathPro2 = [];
+            for(var ii=0; ii < marker_proto2.length; ii++)
+            {
+                google.maps.event.addListener(marker_proto2[ii], 'click', function() {
+                     trasaSelektovana = 3;
+                      
+                    trail1.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    trail2.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    
+                    trail3.setMap(null);
+                    pathPro2 = [];
+                    marker_proto2.forEach(function(e){
+                        pathPro2.push(e.position);
+                    })
+                    trail3 = new google.maps.Polyline({
+                        path: pathPro2,
+                        geodesic: true,
+                        strokeColor: boje_trasa[2],
+                        strokeOpacity: 1,
+                        strokeWeight: 3
+                    });
+                    trail3.setMap(map);
+                    var pathRequest = {
+                      'path': pathPro2,
+                      'samples': num_samples
+                    }
+                    trailProto1Array = pathPro2;
+                    elevator.getElevationAlongPath(pathRequest, plotElevation);
+                });
+                google.maps.event.addListener(marker_proto2[ii], 'dragend', function() {
+                     trasaSelektovana = 2;
+                    
+                      
+                    trail1.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    trail2.setOptions({ strokeOpacity: "0.7", strokeWeight: 2 });
+                    
+                    
+                    
+                    trail3.setMap(null);
+                    pathPro2 = [];
+                    marker_proto2.forEach(function(e){
+                        pathPro2.push(e.position);
+                    })
+                    trail3 = new google.maps.Polyline({
+                        path: pathPro2,
+                        geodesic: true,
+                        strokeColor: boje_trasa[2],
+                        strokeOpacity: 1,
+                        strokeWeight: 3
+                    });
+                    trail3.setMap(map);
+                     var pathRequest = {
+                      'path': pathPro2,
+                      'samples': num_samples
+                    }
+                     trailProto1Array = pathPro2;
+                    elevator.getElevationAlongPath(pathRequest, plotElevation);
+                });
+                
+                editTog();
+                
+            }
+            
+            
+               
+            
+            
+        /** refleksija uzoraka na odabranoj trasi */
+            google.visualization.events.addListener(chart, 'select', function() { 
+                var selektovano = chart.getSelection();
+                /*var clanovi; for(var propertyName in selektovano) { clanovi += propertyName+", "; }*/
+                markerSample.position = samplesData[selektovano[0].row].location;
+                markerSample.icon = 'http://src.st-out.com/img/icons/twg/iphone/inverse/icon_flag_1.png';
+                markerSample.setMap(map);
+            });
+            
+            
+            
+            //dragging: false TODO realizuj pomeranje mape na dodiru sa granicom mape, nevidnjivi marker koji je dreging status
+            
+          
+
+            var pro1_trasa = [], pro2_trasa = [];
+            
+        /** kontrole za odabir trase */
+            {   
+            var trasa_cont_div = document.createElement('div');
+            var tOrig_control1 = new trase_control_funct(trasa_cont_div, map, "Originalna trasa sa snimanja", "<i>Snimljene tačke</i>", boje_trasa[0]);
+            trasa_cont_div.index = 1;
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(trasa_cont_div);
+            google.maps.event.addDomListener(tOrig_control1, 'click', function() {
+                trasaSelektovana = 1;
+                 var status = true;
+                if(trail1.visible == true)
+                    status = false;
+                trail1.setVisible(status);
+                marker.forEach(function(e){
+                    e.visible = status;
+                    e.setOpacity();
+                });
+            });
+            
+            var trasa_cont_div = document.createElement('div');
+            var tOrig_control2 = new trase_control_funct(trasa_cont_div, map, "Prepravka originalne trase", "<b>Prototip 1<b>", boje_trasa[1]);
+            trasa_cont_div.index = 1;
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(trasa_cont_div);
+            
+            var pro1_trasa = [];
+            google.maps.event.addDomListener(tOrig_control2, 'click', function() {
+                 trasaSelektovana = 2;
+                var status = true;
+                if(trail2.visible == true)
+                    status = false;
+                trail2.setVisible(status);
+                marker_proto1.forEach(function(e){
+                    e.visible = status;
+                    e.setOpacity(); // bug samo 0 je false sve iznad 0 je true, cak i bez prosledjene vrednosti je TRUE/FALSE, suprotno od trenutnog
+
+                });
+                
+               /* trasaSelektovana = 2;
+               
+                
+                var pro1_trasaDeSer = [];
+                marker_proto1 = [];
+                pro1_trasa.forEach(function(entry) {
+                    pro1_trasaDeSer.push(entry);
+                     marker_proto1.push(new google.maps.Marker({ position: entry, map: map, title: 'pro1', draggable: true }));
+                   
+                });
+               console.log(marker_proto1);*/
+                //if(trail2!=undefined)
+                {
+                    //trail2.setMap(map);
+                }
+                /*else
+                {
+                    trail2 = new google.maps.Polyline({
+                            path: pro1_trasaDeSer,
+                            geodesic: true,
+                            strokeColor: 'red',
+                            strokeOpacity: 1,
+                            strokeWeight: 3
+                    });
+                    trailProto1Array = pro1_trasaDeSer;
+                     elevator.getElevationAlongPath(pathRequest, plotElevation);
+                }*/
+             
+            });
+            
+            var trasa_cont_div = document.createElement('div');
+            var tOrig_control3 = new trase_control_funct(trasa_cont_div, map, "Znatno izmenjena trasa u odnosu na originalni snimak", "<b>Prototip 2<b>", boje_trasa[2]);
+            trasa_cont_div.index = 1;
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(trasa_cont_div);
+            google.maps.event.addDomListener(tOrig_control3, 'click', function() {
+                 trasaSelektovana = 3;
+                var status = true;
+                if(trail3.visible == true)
+                    status = false;
+                trail3.setVisible(status);
+                marker_proto2.forEach(function(e){
+                    e.visible = status;
+                    e.setOpacity(); // bug samo 0 je false sve iznad 0 je true, cak i bez prosledjene vrednosti je TRUE/FALSE, suprotno od trenutnog
+
+                });
+                
+            });
+        }
+            
+            
+            // edit trase i save
+            trasaEditStatus = false;
+            var edit_cont_div = document.createElement('div');
+            var edit_btn_control = new trase_control_funct(edit_cont_div, map, "Izmeni / sačuvaj trasu", "Trase izmena ON/OFF", "#EEEEEE");
+            
+            edit_cont_div.index = 1;
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(edit_cont_div);
+            google.maps.event.addDomListener(edit_btn_control, 'click', function() {
+              
+                editTog();
+                
+            });
+         
+      
+        
+        } /**   initialize() END  */
+
+        
+        
+        
+     /** funkcije ################################################################## */   
+        
+    {
+        function editTog()
+        {
+        
+                
+                 marker.forEach(function(entry) {
+                        if(entry.getDraggable()==true)
+                               entry.setDraggable(false)
+                        else
+                            entry.setDraggable(true)
+                });
+                marker_proto1.forEach(function(entry) {
+                    if(entry.getDraggable()==true)
+                               entry.setDraggable(false)
+                        else
+                            entry.setDraggable(true)
+                });
+                 marker_proto2.forEach(function(entry) {
+                    if(entry.getDraggable()==true)
+                               entry.setDraggable(false)
+                        else
+                            entry.setDraggable(true)
+                });
+        }
+        
+        /**
+        * @param {google.maps.LatLng} newLatLng
+        * @returns {number}
+        */
+        google.maps.LatLng.prototype.distanceFrom = function(newLatLng) {
+           // setup our variables
+           var lat1 = this.lat();
+           var radianLat1 = lat1 * ( Math.PI  / 180 );
+           var lng1 = this.lng();
+           var radianLng1 = lng1 * ( Math.PI  / 180 );
+           var lat2 = newLatLng.lat();
+           var radianLat2 = lat2 * ( Math.PI  / 180 );
+           var lng2 = newLatLng.lng();
+           var radianLng2 = lng2 * ( Math.PI  / 180 );
+           // sort out the radius, MILES or KM?
+           var earth_radius = 6378.1; // (km = 6378.1) OR (miles = 3959) - radius of the earth
+
+           // sort our the differences
+           var diffLat =  ( radianLat1 - radianLat2 );
+           var diffLng =  ( radianLng1 - radianLng2 );
+           // put on a wave (hey the earth is round after all)
+           var sinLat = Math.sin( diffLat / 2  );
+           var sinLng = Math.sin( diffLng / 2  ); 
+
+           // maths - borrowed from http://www.opensourceconnections.com/wp-content/uploads/2009/02/clientsidehaversinecalculation.html
+           var a = Math.pow(sinLat, 2.0) + Math.cos(radianLat1) * Math.cos(radianLat2) * Math.pow(sinLng, 2.0);
+
+           // work out the distance
+           var distance = earth_radius * 2 * Math.asin(Math.min(1, Math.sqrt(a)));
+
+           // return the distance
+           return distance;
+        }
+      
+        function trase_control_funct(controlDiv, map, titile, text, color)
+        {
+            controlDiv.style.padding = '5px';
+            
+            var controlUI = document.createElement('div');
+             
+            controlUI.style.backgroundColor = color; 
+            controlUI.style.border='1px solid'; controlUI.style.cursor = 'pointer';  controlUI.style.textAlign = 'center'; controlUI.title = titile;
+            controlDiv.appendChild(controlUI);
+            var controlText = document.createElement('div');
+            controlText.style.fontFamily='Titillium Web ,sans-serif'; controlText.style.fontSize='10px'; controlText.style.paddingLeft = '4px'; controlText.style.paddingRight = '4px';
+            controlText.innerHTML = text; 
+            controlUI.appendChild(controlText);
+
+            google.maps.event.addDomListener(controlUI, 'click', function() {
+             
+            });
+            return controlUI;
+        }
+        
+       function getElevation(event) {
+
+          var locations = [];
+
+          var clickedLocation = event.latLng;
+          locations.push(clickedLocation);
+
+          // Create a LocationElevationRequest object using the array's one value
+          var positionalRequest = {
+            'locations': locations
+          }
+
+          // Initiate the location request
+          elevator.getElevationForLocations(positionalRequest, function(results, status) {
+            if (status == google.maps.ElevationStatus.OK) {
+              if (results[0]) {
+                alert("The elevation at this point is " + results[0].elevation + " meters.");
+              } 
+            } 
+          });
+       }
+        
+        
+        function drawPath(pathArg) 
+        {
+
+              chart = new google.visualization.ColumnChart(document.getElementById('elevation_chart'));
+
+              var pathRequest = {
+                'path': pathArg,
+                'samples': num_samples
+              }
+
+              elevator.getElevationAlongPath(pathRequest, plotElevation);
+        }
+           
+
+        function plotElevation(results, status) 
+        {
+            
+              if (status != google.maps.ElevationStatus.OK) {
+                return;
+              }
+              var elevations = results; //objekti semplovi
+              elevationsGlob_Array = elevations; //
+              var elevationPath = [];
+              for (var i = 0; i < results.length; i++) {
+                elevationPath.push(elevations[i].location);
+              }
+
+             /* var pathOptions = {
+                path: elevationPath,
+                strokeColor: '#FF9955',
+                opacity: 1,
+                map: map
+              }
+              polyline = new google.maps.Polyline(pathOptions);*/
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Uzorak(n)');
+                data.addColumn('number', 'Visina(m)');
+                data.addColumn('number', '-Pad(m)');
+                data.addColumn('number', '+Pad(m)');
+                var sem;
+                var padPoz; var padNeg;      
+                for (var i = 0; i < results.length; i++) {
+                    if(i!=0)
+                    {
+                        var dif = sem - Number(elevations[i].elevation).toFixed(2);
+                        if(dif<0)
+                        {
+                            padNeg = Number(Math.abs(dif));   
+                            padPoz = 0; 
+                        }
+                        else
+                        {
+                            padNeg = 0;   
+                            padPoz = Number(Math.abs(dif)); 
+                        }
+                    }
+                    else
+                    {
+                        padPoz = 0;
+                        padNeg = 0;
+                    }
+                     padPoz =  padPoz.toFixed(2);
+                     padNeg =  padNeg.toFixed(2);
+                    sem = Number(elevations[i].elevation.toFixed(2));
+                  data.addRow(["n"+(i+1), sem, Number(padNeg*1), Number(padPoz*1)]);
+                }
+
+                document.getElementById('elevation_chart').style.display = 'block';
+               
+                //alert(trasaSelektovana);
+                var duzina=full;
+                var title_umetak;
+                var osnovna_boja;
+                var tmp_e;
+                if(trasaSelektovana==1)
+                {
+                    title_umetak = "snimak terena";
+                    duzina=0;
+                    color =  trail1.strokeColor;
+                    for(var ml=0; ml < marker.length; ml++)
+                    {
+                        var e = marker[ml];
+                        if(ml!=0)
+                        {
+                            if(ml!=10 && ml!=11 && ml!=12)
+                            {
+                                var ls =  e.position.distanceFrom(tmp_e.position);
+                                duzina = duzina + ls;
+                               tmp_e = e;
+                            }
+                        }
+                        else{tmp_e = marker[0];}
+                    }
+                    duzina=duzina*1000;
+                }    
+                else if(trasaSelektovana==2)
+                {
+                    title_umetak = "prototip alternativa 1";
+                    duzina=0;
+                    color =  trail2.strokeColor;
+                    marker_proto1.forEach(function(e){
+                        if(tmp_e != undefined && tmp_e!= "")
+                        {
+                          var ls =  e.position.distanceFrom(tmp_e.position);
+                          duzina = duzina + ls;
+                        }
+                        tmp_e = e;
+                    });
+                    duzina=duzina*1000;
+                }
+                else
+                {
+                     title_umetak = "prototip alternativa 2";
+                     duzina=0;
+                     color =  trail3.strokeColor; //'#22AADD';
+                     marker_proto2.forEach(function(e){
+                        if(tmp_e != undefined && tmp_e!= "")
+                        {
+                            var ls =  e.position.distanceFrom(tmp_e.position);
+                             duzina += ls;
+                        }
+                        tmp_e = e;
+                    });
+                    duzina=duzina*1000;
+                }
+                    
+                chart.draw(data, {
+                    height: visinaElevprofila,
+                    legend: '',
+                    colors:  [ color, '#ff3300', '#22ff33'],
+                    titleY: 'Visina (mnv)',
+                    titleX: 'Uzorci (1 - '+num_samples+')',
+                    title: '"Freeride Durmitor" { '+title_umetak+' } | L - '+duzina.toFixed(1)+'m ' ,
+                    isStacked: 'true',
+                    allowHtml: true,
+                    vAxis: { ticks: [1200,1600,1800,2200], viewWindow:{min : 1500} }
+                });
+            
+                samplesData = results;
+             
+        }
+        
+        
+        function rezolucijaTrenutna(rez) {
+            document.querySelector('#rezOut').value = rez;
+        }
+        
+        function sample_distanca()
+        {
+            return (full/num_samples).toFixed(1);    
+        }
+        
+        Object.prototype.toString()
+        {
+            // odraditi !!! //TODO:
+        }
+          
+        google.maps.event.addDomListener(window, 'load', initialize);
+        
+      
+        
+       
+        /** ON READY */
+        $(document).ready(function(){
+                
+           
+            
+             $("#distancaPoUzorku").text(sample_distanca());
+            
+             $("#sliderRezolucija").val(num_samples); // podesi slajder na vrednos setovanu kao pocetnu
+            
+            /** azuriraj grafik prema odabranoj rezoluciji uzoraka */
+             $("#sub_btn").click(function(){
+               
+                 
+                num_samples = Number($("#sliderRezolucija").val());
+                var pathRequest = {
+                  'path': trailProto1Array,
+                 'samples': num_samples
+                }
+                $("#distancaPoUzorku").text(sample_distanca());
+                elevator.getElevationAlongPath(pathRequest, plotElevation);
+                
+            }); 
+            
+            
+            /** podesavanje visine grafika */
+            $("#range").change(function(){
+                 visinaElevprofila = $("#range").val()*150;
+                 $("#elevation_chart").fadeOut(300) ;
+                 $("#elevation_chart").css("height",visinaElevprofila+"px") ;
+                 $("#elevation_chart").fadeIn(550) ;
+                
+                //num_samples = Number($("#sliderRezolucija").val());
+                var pathRequest = { 'path': trailProto1Array,  'samples': num_samples  }
+                
+                $("#distancaPoUzorku").text(sample_distanca());
+                elevator.getElevationAlongPath(pathRequest, plotElevation);
+                update();
+            }); 
+            
+        })
+       
+    }
+        
+    </script>
+      
+      <style>
+       body{font-family: 'Titillium Web', sans-serif; font-size: 0.9em}
+        .rangeVert {
+            -webkit-appearance: slider-vertical;
+            width: 15px;
+            height: 90px;
+        }
+        div{}
+      
+      </style>      
+      <link href='http://fonts.googleapis.com/css?family=Titillium+Web&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+      <div style="font-size: 0.8em; padding-left:10px"><strong style="font-size: 1.2em !important">Freeride Durmitor / prikaz snimanaja trena</strong><br />Kontrole pri vrhu mape, 'Snimljene tačke',                 'Prototip 1', 'Prototip 2', prikazuju ili skrivaju trasu. | 'Trase izmena ON/OFF' - otključavanje trasa za izmene pomoću markera | Klikom na marker trase, trasa kojoj pripada              marker, učitava se u grafikonu ispod</div>
+    <div id="map-canvas" style="height:550px; width: 1500px; margin-left: 2em; margin-top: 1em"></div>
+    
+      <div style="flaot: left; width: 100%; padding: 10px; margin-top:0em; margin-left: 1em; border-top: 2px solid gray; margin-top: 0.3em">
+          <br />
+          <input title="Rezolucija uzoraka grafikona" id="sliderRezolucija" type="range" min="20" max="500" step="5" onchange="rezolucijaTrenutna(value)"/> 
+          Uzorci br. <output for=sliderRezolucija id=rezOut>20</output>
+          <input type="button" id="sub_btn" value="Azuriraj profil"/>
+              
+      </div>
+      <div style="flaot: left; width: 100%; padding: 10px; border-bottom: 1px solid lightgray; border-top: 1px solid lightgray">
+      <span>Distanca po uzorku: </span><span id="distancaPoUzorku"></span><span> m</span>
+      </div>
+      
+      
+      
+      <div style="float: left; width: 100%; margin-top: 0em">
+        
+          <input title="Sklairanje grafikona" type="range" id="range" min="1" max="4" step="1" value="2" class="rangeVert" style="float: left; margin-left: 0.5em; margin-top: 2em"/>
+          <div id="elevation_chart"   style="height:300px; width: 1600px; float: left; margine-top: 1em"></div>
+        
+      </div>
+      <div style="font-size: 0.8em; padding-left:10px"><strong style="font-size: 1.2em !important">Visinski profil odabrane trase</strong><br />
+        Uzorci br. - odabir rezolucije profila. Klikom na uzorak profila, ucrtava se njegova lokacija na mapi (zastavica). | Vertikalni slajder, promena visine grafika.
+      </div>
+     
+      
+  </body>
+</html>
